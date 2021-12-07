@@ -12,18 +12,15 @@
     <body>
         <header class="page-header">
             <div class="container">
-
-                <a href="{% url 'post_product' %}" class="top-menu">
-                    {% include './icons/file-earmark-plus.svg' %}
-                </a>
                 <h1><a href="/get/product">Retail Store</a></h1>
             </div>
         </header>
 
-        {% for product in products %}
-            <article>
-                {{product.productName}}, {{product.productId}}, {{product.availableQuantity}}
-            </article>
-        {% endfor %}
+        <form action="/post/product" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Submit">
+        </form>
     </body>
 </html>
+
