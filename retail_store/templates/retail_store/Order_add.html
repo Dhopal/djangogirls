@@ -1,9 +1,13 @@
 {% extends 'retail_store/base.html' %}
 
 {% block content %}
-        <form action="/post/product" method="post">
+        <form action="/orderProduct" method="post">
             {% csrf_token %}
             {{ form }}
             <input type="submit" value="Submit">
         </form>
 {% endblock content %}
+
+
+
+
