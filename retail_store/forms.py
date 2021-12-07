@@ -10,6 +10,10 @@ class ProductForm(forms.ModelForm):
 
 
 class OrderForm(forms.ModelForm):
+    productName = forms.ModelChoiceField(queryset=Product.objects.all(),
+                                         to_field_name='productName',
+                                         empty_label='select product')
+
     class Meta:
         model = Order
-        fields = ('productId', 'quantity',)
+        fields = ('productName', 'quantity',)

@@ -1,9 +1,13 @@
+import uuid
+
 from django.shortcuts import render, redirect
 
-from .forms import ProductForm, OrderForm
+from .forms import ProductForm
+from .forms import OrderForm
 from .models import Product
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 
 def get_product(request):
@@ -32,21 +36,28 @@ def order_product(request):
         form = OrderForm(request.POST)
         if form.is_valid():
             quantity = request.POST['quantity']
-            productId = request.POST['productId']
-            product = Product.objects.get(productId=productId)
+            productName = request.POST['productName']
+
+            print(productName)
+
+            product = Product.objects.get(productName=productName)
             availableQuantity = product.availableQuantity
 
-            print("q=" + quantity + " pid = " + productId + " avl = " + availableQuantity)
-            if quantity > availableQuantity:
+            print("q=" + str(quantity) + " pn = " + productName + " avl = " + str(availableQuantity))
+            if int(quantity) > availableQuantity:
                 form = OrderForm()
                 return render(request, 'retail_store/Order_add.html', {'form': form})
 
             order = form.save(commit=False)
-            order.productId = request.POST['productId']
-            order.quantity = request.POST['quantity']
-            order.customerId = request.user.id
+            order.productName = product
+            order.quantity = quantity
+            print("print user id")
+            print(request.user.id)
+            user = User.objects.get(id=request.user.id)
+            order.customerId = user
+
             order.save()
-            product.availableQuantity = availableQuantity - quantity
+            product.availableQuantity = int(availableQuantity) - int(quantity)
             product.save()
             return redirect('/get/product', pk=product.pk)
     else:
